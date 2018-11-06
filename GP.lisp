@@ -1,6 +1,6 @@
 (DEFUN GENERATE(level)
     (SETF *random-state* (make-random-state t))
-    (SETQ continue (RANDOM 4))                                      ;1 to 3 = nested, 0 = constant/var
+    (SETQ continue (RANDOM 2))                                      ;1 to 3 = nested, 0 = constant/var
     (IF (OR (= 0 level) (AND (> continue 0) (> 3 level)))           ;limits degree of tree to 1 - 3
         (LET ((operator (RANDOM 3)))                                  
             (IF (= operator 0)
@@ -29,18 +29,18 @@
         )
     )
 )
-(DEFUN PURGE(original survivorCount)
+(DEFUN PURGE(original expected survivorCount)
     (SETF fitList ())
     (LOOP for count from 0 to 49                        ;create list of fitness of pool
         do
-        (SETF fitList (APPEND fitList (LIST (ABS (EVAL (NTH count original))))))
+        (SETF fitList (APPEND fitList (LIST (ABS (- expected (EVAL (NTH count original)))))))   ;fitness = |expected - result|, 0 is best
     )
     (SORT fitList '<)                                   ;sort fitness list, to get nth fitness
     (SETF survivors ())
     (LOOP for count from 0 to 49                        ;populate n survivors with exprs with fitness <= topFit
             WHILE (<= (LIST-LENGTH survivors) survivorCount)
         do
-        (IF (<= (ABS (EVAL (NTH count original))) (NTH survivorCount fitList)) ;if less than n survivors and survivor has acceptable fitness
+        (IF (<= (ABS (- expected (EVAL (NTH count original)))) (NTH survivorCount fitList)) ;if less than n survivors and survivor has acceptable fitness
             (SETF survivors (APPEND survivors (LIST (NTH count original))))
         )
     )
@@ -57,8 +57,10 @@
     do
     (SETF pool (APPEND pool (LIST (GENERATE 0))))
 )
-(SETF nextGen (purge pool 24))          ;purge, keep 25
-(LOOP for count from 0 to 24            ;test, print survivors
+(SETF nextGen (PURGE pool expected 24))          ;purge, keep 25
+
+
+(LOOP for count from 0 to 24            ;test, print survivors expressions and fitness
     do
-    (PRINT (NTH count nextGen))
+    (PRINT (LIST (NTH count nextGen) "      " (ABS (- expected (EVAL (NTH count nextGen))))))
 )
