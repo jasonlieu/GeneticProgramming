@@ -98,6 +98,7 @@
 (SETF Z 3)
 (SETF expected 15)
 (SETF pool ())                          ;initial pool
+(SETF nextPool ())
 (LOOP for count from 0 to 49            ;initial population
     do
     (SETF pool (APPEND pool (LIST (GENERATE 0))))
@@ -121,7 +122,6 @@
 
 (DEFUN CROSSPOINT(p)
     (SETF crossp (RANDOM(- (LIST-LENGTH p) 1)))
-    ;; (SETF crossp (MOD rnum (LIST-LENGTH p)))     ;; uhh don't know if we actually need this line
     (SETF subl (NTH crossp p))         ; grab node from sub-list for corssover
 
     (format t "original expression: ~a~%" p)
@@ -186,8 +186,6 @@
     )
 )
 
-;; FOUND on stack overflow remember to reference
-;; doesn't replace stuff, inserts
 (DEFUN INSERT-N (l n elem)
     (COND
         ((NULL l) ())
@@ -261,7 +259,9 @@
 
     ;; result of crossover
     (MULTIPLE-VALUE-BIND (a b) (CROSSOVER p1 p2)
-        (SETF kid1 a)
-        (SETF kid2 b)
+
+        ;; add kids to the next pool
+        (SETF nextPool (append nextPool a))
+        (SETF nextPool (append nextPool b))
     )
 )
