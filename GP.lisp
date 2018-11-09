@@ -256,9 +256,6 @@
     (SETF p2 (NTH index2 test_pool))                ; save p2
     (SETF test_pool (REMOVE p2 test_pool))          ; remove p2 from current pool
 
-    ;; CROSSOVER FUNCTION HERE
-    (CROSSOVER p1 p2)
-
     (SETF kid1 NIL)
     (SETF kid2 NIL)
 
