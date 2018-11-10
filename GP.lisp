@@ -249,3 +249,36 @@
         (SETF nextPool (append nextPool b))
     )
 )
+
+
+;MAIN
+(SETF Y 4)                  ;set XYZ and expected
+(SETF X 2)
+(SETF Z 3)
+(SETF expected 15)
+(SETF pool ())                          ;initial pool
+(SETF best ())
+(LOOP for count from 0 to 49            ;initial population
+    do
+    (SETF pool (APPEND pool (LIST (GENERATE 0))))
+)
+(LOOP for generation from 0 to 49
+    do
+    (SETF best (APPEND best (LIST (PURGE pool expected 0))))   ;purge 49, put top fit of generation in best
+    (SETF nextGen ())                   ;clear out nextGen
+    (LOOP for count from 0 to 24        ;mate 0 with 49, 1 with 48, ... 24 with 25
+        do
+        (MULTIPLE-VALUE-BIND (a b) (CROSSOVER (NTH count pool) (NTH (- 49 count) pool))
+
+            ;; add kids to the next pool
+            (SETF nextGen (append nextGen (LIST (MUTATE a))))
+            (SETF nextGen (append nextGen (LIST (MUTATE b))))
+        )
+    )
+    (SETF pool nextGen)
+)
+(LOOP for count from 0 to 49
+    do
+    (PRINT (NTH count best))
+    (PRINT (EVAL (NTH 0 (NTH count best))))
+)
