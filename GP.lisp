@@ -29,6 +29,7 @@
         )
     )
 )
+
 (DEFUN PURGE(original expected survivorCount)
     (SETF fitList ())
     (LOOP for count from 0 to 49                        ;create list of fitness of pool
@@ -46,6 +47,7 @@
     )
     (RETURN-FROM PURGE survivors)
 )
+
 (DEFUN MUTATE(expression)
     (IF (LISTP expression)                              ;only mutate lists, not leaves
         (PROGN
@@ -98,32 +100,6 @@
         (RETURN-FROM MUTATE expression) ;expression is already a leaf, stop mutation
     )
 )
-;MAIN
-(SETF Y 4)                  ;set XYZ and expected
-(SETF X 2)
-(SETF Z 3)
-(SETF expected 15)
-(SETF pool ())                          ;initial pool
-(SETF nextPool ())
-(LOOP for count from 0 to 49            ;initial population
-    do
-    (SETF pool (APPEND pool (LIST (GENERATE 0))))
-)
-(SETF pool (PURGE pool expected 24))          ;purge, keep 25
-
-
-;testing
-(PRINT (NTH 0 pool))
-(PRINT (MUTATE (NTH 0 pool)))
-
-
-(SETF test_pool ())         ; test pool
-(LOOP for count from 0 to 9
-    do
-    (SETF test_pool (APPEND test_pool (LIST (GENERATE 0))))     ; generate 10 parents
-)
-
-(SETF operator `(+ - * x y z))
 
 (DEFUN CROSSPOINT(p)
     (SETF crossp (RANDOM(- (LIST-LENGTH p) 1)))
@@ -134,7 +110,6 @@
     (format t "returning: point: ~a list: ~a ~%" crossp subl)
     (VALUES crossp subl)
 )
-
 
 (DEFUN FIND-NODE (l pt subnode)
     (COND
@@ -221,41 +196,6 @@
 
     (VALUES kid1 kid2)
 )
-
-(LOOP WHILE(> (- (LIST-LENGTH test_pool) 1) 0)     ; loop through pool
-    do
-
-    (IF (= (- (LIST-LENGTH test_pool) 1) 0)
-        (PROGN
-            (SETF index 1)
-            (SETF index2 0)
-        )
-
-        ;; Choose parents to mate
-        (PROGN
-            (SETF index (RANDOM (- (LIST-LENGTH test_pool) 1))) 
-            (SETF index2 (RANDOM (- (LIST-LENGTH test_pool) 1)))
-        )
-    )
-
-    (SETF p1 (NTH index test_pool))                 ; save p1
-    (SETF test_pool (REMOVE p1 test_pool))          ; remove p1 from current pool
-
-    (SETF p2 (NTH index2 test_pool))                ; save p2
-    (SETF test_pool (REMOVE p2 test_pool))          ; remove p2 from current pool
-
-    (SETF kid1 NIL)
-    (SETF kid2 NIL)
-
-    ;; result of crossover
-    (MULTIPLE-VALUE-BIND (a b) (CROSSOVER p1 p2)
-
-        ;; add kids to the next pool
-        (SETF nextPool (append nextPool a))
-        (SETF nextPool (append nextPool b))
-    )
-)
-
 
 ;MAIN
 (SETF Y 4)                  ;set XYZ and expected
