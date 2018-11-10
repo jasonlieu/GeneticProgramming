@@ -111,7 +111,6 @@
 (PRINT (MUTATE (NTH 0 pool)))
 
 
-(PRINT "Crossover test Pool~%")
 (SETF test_pool ())         ; test pool
 (LOOP for count from 0 to 9
     do
@@ -154,20 +153,12 @@
                 (SETF found (FIND-NODE l2 pt2 subn2))
                 ;; if p1 crosspoint is a operator and p2 isn't
                 (IF (AND (MEMBER (NTH pt1 l1) `(+ - *)) (NOT (MEMBER found `(+ - *))))
-                    (PROGN
-                        (format t "~%check operator or var p1: ~a p2: ~a~%" (NTH pt1 l1) found)
-                        (format t "THIS IS OPERATOR FIRST")
                         (SETF pt1 (+ pt1 2))
-                    )
 
-                    ;; if p1 crosspoint is not a operator but p2 is
-                    (IF (AND (NOT (MEMBER (NTH pt1 l1) `(+ - *)))  (MEMBER found `( + - *)))
-                        (PROGN
-                        (format t "~%check operator or var p1: ~a p2: ~a~%" (NTH pt1 l1) found)
-                        (format t "THIS IS EXPR FIRST")
-                        (SETF pt1 0)
-                    ))
-                )
+                        ;; if p1 crosspoint is not a operator but p2 is
+                        (IF (AND (NOT (MEMBER (NTH pt1 l1) `(+ - *)))  (MEMBER found `( + - *)))
+                            (SETF pt1 0)
+                ))
 
                 (SETF newkid (INSERT-N l1 pt1 found))
                 (IF (> (LIST-LENGTH newkid) 3)
@@ -198,12 +189,9 @@
 
     (SETF *random-state* (make-random-state t))
 
-    ;; SELECT Crosspoint for p1 and p2
-    (SETF rnum (RANDOM (- (LIST-LENGTH p1) 1)))     ; random number
-    (SETF crossp1 (MOD rnum (LIST-LENGTH p1)))
-
-    (SETF rnum2 (RANDOM (- (LIST-LENGTH p2) 1))) 
-    (SETF crossp2 (MOD rnum (LIST-LENGTH p2)))
+    ;; SELECT Crosspoint for p1 and p2 and save the sublist
+    (SETF crossp1 NIL)
+    (SETF crossp2 NIL)
 
     (SETF sublist1 NIL)
     (SETF sublist2 NIL)
@@ -225,12 +213,8 @@
     (SETF kid2 (MATE p2 p1 crossp2 crossp1 sublist2 sublist1))
     (format t "~% kid2: ~a~%" kid2)
 
-
     (VALUES kid1 kid2)
 )
-
-;; LIST-LENGTH
-(FORMAT t "length ~a~%" (LIST-LENGTH test_pool))
 
 (LOOP WHILE(> (- (LIST-LENGTH test_pool) 1) 0)     ; loop through pool
     do
