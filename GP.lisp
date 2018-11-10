@@ -50,8 +50,8 @@
     (IF (LISTP expression)                              ;only mutate lists, not leaves
         (PROGN
             (SETF *random-state* (make-random-state t))                  
-            (IF (= 0 (RANDOM 20))                            ;0 = mutation, 1 - 19 = no mutation
-                (IF (= 0 (RANDOM 1))                  ;0 = leaf, 1 = op
+            (IF (= 0 (RANDOM 20))                            ;0 = mutation, 1 - 19 = no mutation, 5%
+                (IF (= 0 (RANDOM 2))                  ;0 = leaf, 1 = op
                     (PROGN                              ;leaf mutation
                         (IF (AND (LISTP (NTH 1 expression)) (LISTP (NTH 2 expression)))     ;if no leaves, keep recursing
                             (RETURN-FROM MUTATE (LIST (NTH 0 expression) (MUTATE (NTH 1 expression)) (MUTATE (NTH 2 expression))))
@@ -80,10 +80,16 @@
                             )
                         )
                     )
-                    (PROGN
-                    ;   op replacement here
-                    ;   don't have to worry about whether or not it's a leaf
-                    ;   change line 54 to (RANDOM 2)
+                    (PROGN                 ;op mutation
+                        (SETF operatorChoice (RANDOM 3))    ;0 = +, 1 = -, 2 = *
+                        (IF (= operatorChoice 0)
+                            (RETURN-FROM MUTATE (LIST '+ (MUTATE (NTH 1 expression)) (MUTATE (NTH 2 expression))))
+                        (IF (= operatorChoice 1)
+                            (RETURN-FROM MUTATE (LIST '- (MUTATE (NTH 1 expression)) (MUTATE (NTH 2 expression))))
+                        (IF (= operatorChoice 2)
+                            (RETURN-FROM MUTATE (LIST '* (MUTATE (NTH 1 expression)) (MUTATE (NTH 2 expression))))
+                        )))
+
                     )
                 )
                 (RETURN-FROM MUTATE (LIST (NTH 0 expression) (MUTATE (NTH 1 expression)) (MUTATE (NTH 2 expression)))) ;no mutation, keep recursing
