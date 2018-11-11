@@ -101,6 +101,16 @@
     )
 )
 
+(DEFUN BestAvgWorst (pool)
+    (SETF fitList ())
+    (LOOP for count from 0 to 49                        ;create list of fitness of pool
+        do
+        (SETF fitList (APPEND fitList (LIST (ABS (- expected (EVAL (NTH count pool)))))))   ;fitness = |expected - result|, 0 is best
+    )
+    (SORT fitList '<)
+    (RETURN-FROM BestAvgWorst (LIST (NTH 0 fitList) (NTH 24 fitList) (NTH 49 fitList)))
+)
+
 (DEFUN CROSSPOINT(p)
     (SETF crossp (RANDOM(- (LIST-LENGTH p) 1)))
     (SETF subl (NTH crossp p))         ; grab node from sub-list for corssover
@@ -198,6 +208,7 @@
 (SETF expected 58)
 (SETF pool ())                          ;initial pool
 (SETF best ())
+(SETF BstAvgWrt ())
 (LOOP for count from 0 to 49            ;initial population
     do
     (SETF pool (APPEND pool (LIST (GENERATE 0))))
@@ -205,6 +216,7 @@
 (LOOP for generation from 0 to 49
     do
     (SETF best (APPEND best (LIST (PURGE pool expected 0))))   ;purge 49, put top fit of generation in best
+    (SETF BstAvgWrt (APPEND BstAvgWrt (LIST (BestAvgWorst pool))))
     (SETF nextGen ())                   ;clear out nextGen
     (LOOP for count from 0 to 24        ;mate 0 with 49, 1 with 48, ... 24 with 25
         do
@@ -219,5 +231,5 @@
 )
 (LOOP for count from 0 to 49
     do
-    (format t "~a. expression: ~a value: ~a~%" count (NTH count best) (EVAL (NTH 0 (NTH count best))))
+    (format t "~a. expression: ~a value: ~a  average: ~a  worst: ~a~%" count (NTH count best) (EVAL (NTH 0 (NTH count best))) (NTH 1 (NTH count BstAvgWrt)) (NTH 2 (NTH count BstAvgWrt)))
 )
