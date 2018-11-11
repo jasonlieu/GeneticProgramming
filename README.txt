@@ -1,6 +1,6 @@
 Program Name: GP.lisp
 Team: AKJ
-Group names: Amy Nguyen-Dang, Kiren, Jason Lieu
+Group names: Amy Nguyen-Dang, Kiren Syed, Jason Lieu
 Contact Info: amyndang@csu.fullerton.edu, kirensyed@csu.fullerton.edu, jasonlieu@csu.fullerton.edu
 Class number: CPSC 481
 
