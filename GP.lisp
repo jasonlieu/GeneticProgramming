@@ -101,14 +101,32 @@
     )
 )
 
-(DEFUN BestAvgWorst (pool)
+(DEFUN BestAvgWorst (pool expected)
     (SETF fitList ())
+    (SETF total 0)
+    (SETF baw ())
     (LOOP for count from 0 to 49                        ;create list of fitness of pool
         do
         (SETF fitList (APPEND fitList (LIST (ABS (- expected (EVAL (NTH count pool)))))))   ;fitness = |expected - result|, 0 is best
+        (SETF total (+ total (EVAL (NTH count pool))))
     )
     (SORT fitList '<)
-    (RETURN-FROM BestAvgWorst (LIST (NTH 0 fitList) (NTH 24 fitList) (NTH 49 fitList)))
+    (LOOP for count from 0 to 49
+            WHILE (= 0 (LIST-LENGTH baw))
+        do
+        (IF (= (ABS (- expected (EVAL (NTH count pool)))) (NTH 0 fitList))
+            (SETF baw (APPEND baw (LIST (EVAL (NTH count pool)))))
+        )
+    )
+    (SETF baw (APPEND baw (LIST (FLOAT (/ total 50)))))
+    (LOOP for count from 0 to 49
+            WHILE (= (LIST-LENGTH baw) 2)
+        do
+        (IF (= (ABS (- expected (EVAL (NTH count pool)))) (NTH 49 fitList))
+            (SETF baw (APPEND baw (LIST (EVAL (NTH count pool)))))
+        )
+    )
+    (RETURN-FROM BestAvgWorst baw)
 )
 
 (DEFUN CROSSPOINT(p)
@@ -202,10 +220,10 @@
 )
 
 ;MAIN
-(SETF Y -4)                  ;set XYZ and expected
-(SETF X -5)
-(SETF Z -3)
-(SETF expected 58)
+(SETF Y 0)                  ;set XYZ and expected
+(SETF X -2)
+(SETF Z 1)
+(SETF expected -16)
 (SETF pool ())                          ;initial pool
 (SETF best ())
 (SETF BstAvgWrt ())
@@ -216,7 +234,7 @@
 (LOOP for generation from 0 to 49
     do
     (SETF best (APPEND best (LIST (PURGE pool expected 0))))   ;purge 49, put top fit of generation in best
-    (SETF BstAvgWrt (APPEND BstAvgWrt (LIST (BestAvgWorst pool))))
+    (SETF BstAvgWrt (APPEND BstAvgWrt (LIST (BestAvgWorst pool expected))))
     (SETF nextGen ())                   ;clear out nextGen
     (LOOP for count from 0 to 24        ;mate 0 with 49, 1 with 48, ... 24 with 25
         do
@@ -232,4 +250,5 @@
 (LOOP for count from 0 to 49
     do
     (format t "~a. expression: ~a value: ~a  average: ~a  worst: ~a~%" count (NTH count best) (EVAL (NTH 0 (NTH count best))) (NTH 1 (NTH count BstAvgWrt)) (NTH 2 (NTH count BstAvgWrt)))
+    ;(format t "~a ---- ~a ---- ~a~%" (NTH 0 (NTH count BstAvgWrt)) (NTH 1 (NTH count BstAvgWrt)) (NTH 2 (NTH count BstAvgWrt)))
 )
