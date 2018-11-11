@@ -108,7 +108,7 @@
     (LOOP for count from 0 to 49                        ;create list of fitness of pool
         do
         (SETF fitList (APPEND fitList (LIST (ABS (- expected (EVAL (NTH count pool)))))))   ;fitness = |expected - result|, 0 is best
-        (SETF total (+ total (EVAL (NTH count pool))))
+        (SETF total (+ total (ABS (- expected (EVAL (NTH count pool))))))
     )
     (SORT fitList '<)
     (LOOP for count from 0 to 49
