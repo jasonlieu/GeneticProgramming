@@ -105,9 +105,7 @@
     (SETF crossp (RANDOM(- (LIST-LENGTH p) 1)))
     (SETF subl (NTH crossp p))         ; grab node from sub-list for corssover
 
-    (format t "original expression: ~a~%" p)
     ;; return the crosspoint and sublist
-    (format t "returning: point: ~a list: ~a ~%" crossp subl)
     (VALUES crossp subl)
 )
 
@@ -177,31 +175,27 @@
     (SETF sublist1 NIL)
     (SETF sublist2 NIL)
 
-    (format t "~%--P1--~%")
     (MULTIPLE-VALUE-BIND (a b) (CROSSPOINT p1)
         (SETF crossp1 a)
         (SETF sublist1 b)
     )
 
-    (format t "~%--P2--~%")
     (MULTIPLE-VALUE-BIND (a b) (CROSSPOINT p2)
         (SETF crossp2 a)
         (SETF sublist2 b)
     )
 
     (SETF kid1 (MATE p1 p2 crossp1 crossp2 sublist1 sublist2))
-    (format t "~% kid1: ~a~%" kid1)
     (SETF kid2 (MATE p2 p1 crossp2 crossp1 sublist2 sublist1))
-    (format t "~% kid2: ~a~%" kid2)
 
     (VALUES kid1 kid2)
 )
 
 ;MAIN
-(SETF Y 4)                  ;set XYZ and expected
-(SETF X 2)
-(SETF Z 3)
-(SETF expected 15)
+(SETF Y -4)                  ;set XYZ and expected
+(SETF X -5)
+(SETF Z -3)
+(SETF expected 58)
 (SETF pool ())                          ;initial pool
 (SETF best ())
 (LOOP for count from 0 to 49            ;initial population
