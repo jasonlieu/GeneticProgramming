@@ -225,6 +225,5 @@
 )
 (LOOP for count from 0 to 49
     do
-    (PRINT (NTH count best))
-    (PRINT (EVAL (NTH 0 (NTH count best))))
+    (format t "~a. expression: ~a value: ~a~%" count (NTH count best) (EVAL (NTH 0 (NTH count best))))
 )
