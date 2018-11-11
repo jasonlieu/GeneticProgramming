@@ -220,10 +220,10 @@
 )
 
 ;MAIN
-(SETF Y 0)                  ;set XYZ and expected
-(SETF X -2)
-(SETF Z 1)
-(SETF expected -16)
+(SETF X 1)                  ;set XYZ and expected
+(SETF Y 0)
+(SETF Z 2)
+(SETF expected 2)
 (SETF pool ())                          ;initial pool
 (SETF best ())
 (SETF BstAvgWrt ())
@@ -250,5 +250,5 @@
 (LOOP for count from 0 to 49
     do
     (format t "~a. expression: ~a value: ~a  average: ~a  worst: ~a~%" count (NTH count best) (EVAL (NTH 0 (NTH count best))) (NTH 1 (NTH count BstAvgWrt)) (NTH 2 (NTH count BstAvgWrt)))
-    (format t "    fitness: ~a ---- ~a ---- ~a~%" (ABS (- expected (NTH 0 (NTH count BstAvgWrt)))) (ABS (- expected(NTH 1 (NTH count BstAvgWrt)))) (ABS (- expected (NTH 2 (NTH count BstAvgWrt)))))
+    (format t "    fitness: ~a ---- ~a ---- ~a~%" (ABS (- expected (NTH 0 (NTH count BstAvgWrt)))) (NTH 1 (NTH count BstAvgWrt)) (ABS (- expected (NTH 2 (NTH count BstAvgWrt)))))
 )
