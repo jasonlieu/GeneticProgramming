@@ -1,3 +1,11 @@
+;Program Name: GP.lisp
+;Team: AKJ
+;Group names: Amy Nguyen-Dang, Kiren Syed, Jason Lieu
+;Contact Info: amyndang@csu.fullerton.edu, kirensyed@csu.fullerton.edu, jasonlieu@csu.fullerton.edu
+;Class number: CPSC 481
+;This is a genetic programing problem. We will be using genetic programming to find a good approximation to a unknown quadratice arithmetic expression in several variables.
+;Each individual in our pool or population will be arithmetic expression. And expression can be composed of operators (+, -, *), variable names (x, y, z) and constant integers (positive and negative).
+
 (DEFUN GENERATE(level)
     (SETF *random-state* (make-random-state t))
     (SETQ continue (RANDOM 2))                                      ;1 to 3 = nested, 0 = constant/var
